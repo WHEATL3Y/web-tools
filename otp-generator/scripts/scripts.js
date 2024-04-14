@@ -1,40 +1,36 @@
-"use strict"
-
 async function generateOTP(secret) {
 
-    let hash = await sha1(secret);
-    let i = hash[hash.length - 1] & 0xf;
+    const counter = Math.floor((((new Date()).getTime()) / 1000) / 30);
+    const hash = await sha1(secret, counter);
+    const i = hash & BigInt(0xf);
 
-    extract31(hash, i);
+    console.log(extract31(hash, i) % BigInt(10**6));
+
 }
 
-async function sha1(secret) {
+async function sha1(secret, counter) {
 
     // Generate a sha1 digest from secret
-    // Return an array containting the hash data 
+    // Return the decimal representation, as BigInt
 
     const e = new TextEncoder();
-    
-    let hash = await crypto.subtle.digest("SHA-1", e.encode(secret));
-    hash = Array.from(new Uint8Array(hash));
-    
+    let hash = await crypto.subtle.sign("SHA-1", e.encode(secret), e.encode(counter));
+    hash = Array.from(new Uint8Array(hash))
+        .map(v => v.toString(16)
+        .padStart(2, "0"))
+        .join("");
+    hash = BigInt(`0x${hash}`);
+
     return hash;
+
 }
 
 function extract31(hash, offset) {
 
-    console.log(hash);
+    // 31 bit mask
+    let mask = BigInt(0x7FFFFFFF);
 
-    let truncatedHash = 0;
-    let oStart = offset * 8 + 1;
-    let oEnd = offset * 8 + 4 * 8 -1;
-    const firstByte = Math.floor(oStart / 8);
-    const firstByteMask = 8 - (oStart % 8);
-    const lastByte = Math.floor(oEnd / 8);
-    const lastByteMask = (oEnd % 8);
-
-    truncatedHash &= hash[9] & firstByteMask;
-
-    console.log(oStart, oEnd, firstByte, lastByte, firstByteMask, lastByteMask);
-    console.log(truncatedHash);
+    mask <<= offset;
+    
+    return hash & mask;
 }
