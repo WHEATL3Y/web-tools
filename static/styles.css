@@ -1,0 +1,8 @@
+body {
+    /* https://coolors.co/2b2d42-8d99ae-f8f32b-ffffff-000000 */ 
+    background-color: #2b2d42;
+    color: #f8f32b;
+    font-family: monospace;
+    max-width: 40%;
+    margin: auto;
+}
