@@ -1,8 +1,33 @@
+:root {
+    --bg: #2b2d42;
+    --fg: #f8f32b;
+    --field: #000000;
+    --field-text: #ffffff;
+}
+
 body {
     /* https://coolors.co/2b2d42-8d99ae-f8f32b-ffffff-000000 */ 
-    background-color: #2b2d42;
-    color: #f8f32b;
+    background-color: var(--bg);
+    color: var(--fg);
     font-family: monospace;
     max-width: 40%;
     margin: auto;
+}
+
+a, a:visited {
+    color: var(--fg);
+}
+
+input, textarea, input:focus {
+    color: var(--field-text);
+    background-color: var(--field);
+    border: none;
+    border-radius: 10px;
+    outline: none;
+}
+
+textarea {
+    min-width: 95%;
+    max-width: 95%;
+    padding: 10px;
 }
